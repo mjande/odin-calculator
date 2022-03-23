@@ -18,12 +18,7 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
-    if (b == undefined) {
-        display("Good luck with that.")
-        reset = true;
-    } else {
     return round(a / b);
-    }
 }
 
 function operate(op, a, b) {
@@ -75,6 +70,13 @@ numberButtons.forEach((numberButton) => {
     });
 });
 
+document.addEventListener('keydown', (event) => {
+    if (/[0-9]/.test(event.key)) {
+        input(event.key);
+    }
+})
+
+
 document.querySelector(".clear").addEventListener('click', () => {
     storedValue = undefined;
     queuedOp = undefined;
@@ -100,10 +102,24 @@ operators.forEach((operator) => {
 });
 
 document.querySelector(".equals").addEventListener('click', () => {
-    let solution = operate(storedOp, storedValue, returnDisplay());
-    console.log(solution);
-    display(solution);
-    storedOp = undefined;
-    storedValue = undefined;
-    reset = true;
+    if (storedValue === undefined || storedOp === undefined) {
+        reset = true;
+    } else {
+        let solution = operate(storedOp, storedValue, returnDisplay());
+        if (!isFinite(solution)) {
+            display("Nice try!") 
+            reset = true;
+        } else {    
+            display(solution);
+            storedOp = undefined;
+            storedValue = undefined;
+            reset = true;
+        }
+    }    
+});
+
+document.querySelector(".decimal").addEventListener('click', () => {
+    if (!returnDisplay().includes(".")) {
+        input(".");
+    }    
 });
